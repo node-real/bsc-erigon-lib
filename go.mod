@@ -106,3 +106,5 @@ require (
 	google.golang.org/genproto v0.0.0-20230202175211-008b39050e57 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/ledgerwatch/interfaces => github.com/node-real/bsc-erigon-interfaces v0.0.1
