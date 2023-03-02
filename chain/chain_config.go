@@ -77,7 +77,7 @@ type Config struct {
 	GibbsBlock      *big.Int `json:"gibbsBlock,omitempty" toml:",omitempty"`
 	NanoBlock       *big.Int `json:"nanoBlock,omitempty" toml:",omitempty"`
 	MoranBlock      *big.Int `json:"moranBlock,omitempty" toml:",omitempty"`
-
+	PlanckBlock     *big.Int `json:"planckBlock,omitempty" toml:",omitempty"`
 	// Forks specific to Gnosis Chain
 	PosdaoBlock *big.Int `json:"posdaoBlock,omitempty"`
 
@@ -96,7 +96,7 @@ func (c *Config) String() string {
 	engine := c.getEngine()
 
 	if c.Consensus == ParliaConsensus {
-		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Gibbs: %v, Engine: %v}",
+		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Gibbs: %v, Planck: %v, Engine: %v}",
 			c.ChainID,
 			c.RamanujanBlock,
 			c.NielsBlock,
@@ -107,6 +107,7 @@ func (c *Config) String() string {
 			c.NanoBlock,
 			c.MoranBlock,
 			c.GibbsBlock,
+			c.PlanckBlock,
 			engine,
 		)
 	}
@@ -317,6 +318,14 @@ func (c *Config) IsPrague(time uint64) bool {
 
 func (c *Config) IsEip1559FeeCollector(num uint64) bool {
 	return c.Eip1559FeeCollector != nil && isForked(c.Eip1559FeeCollectorTransition, num)
+}
+
+func (c *Config) IsPlanck(num *big.Int) bool {
+	return isForked(c.PlanckBlock, num.Uint64())
+}
+
+func (c *Config) IsOnPlanck(num *big.Int) bool {
+	return numEqual(c.PlanckBlock, num)
 }
 
 // CheckCompatible checks whether scheduled fork transitions have been imported
