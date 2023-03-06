@@ -320,8 +320,8 @@ func (c *Config) IsEip1559FeeCollector(num uint64) bool {
 	return c.Eip1559FeeCollector != nil && isForked(c.Eip1559FeeCollectorTransition, num)
 }
 
-func (c *Config) IsPlanck(num *big.Int) bool {
-	return isForked(c.PlanckBlock, num.Uint64())
+func (c *Config) IsPlanck(num uint64) bool {
+	return isForked(c.PlanckBlock, num)
 }
 
 func (c *Config) IsOnPlanck(num *big.Int) bool {
@@ -486,6 +486,9 @@ func (c *Config) checkCompatible(newcfg *Config, head uint64) *ConfigCompatError
 	}
 	if incompatible(c.MoranBlock, newcfg.MoranBlock, head) {
 		return newCompatError("moran fork block", c.MoranBlock, newcfg.MoranBlock)
+	}
+	if incompatible(c.PlanckBlock, newcfg.PlanckBlock, head) {
+		return newCompatError("bohr fork block", c.PlanckBlock, newcfg.PlanckBlock)
 	}
 	return nil
 }
@@ -675,7 +678,7 @@ type Rules struct {
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
 	IsBerlin, IsLondon, IsShanghai, IsCancun                bool
 	IsSharding, IsPrague                                    bool
-	IsNano, IsMoran, IsGibbs                                bool
+	IsNano, IsMoran, IsGibbs, IsPlanck                      bool
 	IsEip1559FeeCollector                                   bool
 	IsParlia, IsAura                                        bool
 }
@@ -704,6 +707,7 @@ func (c *Config) Rules(num uint64, time uint64) *Rules {
 		IsPrague:              c.IsPrague(time),
 		IsNano:                c.IsNano(num),
 		IsMoran:               c.IsMoran(num),
+		IsPlanck:              c.IsPlanck(num),
 		IsEip1559FeeCollector: c.IsEip1559FeeCollector(num),
 		IsParlia:              c.Parlia != nil,
 		IsAura:                c.Aura != nil,
