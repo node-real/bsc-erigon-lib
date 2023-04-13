@@ -89,7 +89,6 @@ type Config struct {
 	Ethash *EthashConfig `json:"ethash,omitempty"`
 	Clique *CliqueConfig `json:"clique,omitempty"`
 	Aura   *AuRaConfig   `json:"aura,omitempty"`
-	Parlia *ParliaConfig `json:"parlia,omitempty" toml:",omitempty"`
 	Bor    *BorConfig    `json:"bor,omitempty"`
 }
 
@@ -145,8 +144,6 @@ func (c *Config) getEngine() string {
 		return c.Ethash.String()
 	case c.Clique != nil:
 		return c.Clique.String()
-	case c.Parlia != nil:
-		return c.Parlia.String()
 	case c.Bor != nil:
 		return c.Bor.String()
 	case c.Aura != nil:
@@ -184,81 +181,6 @@ func (c *Config) IsByzantium(num uint64) bool {
 // IsConstantinople returns whether num is either equal to the Constantinople fork block or greater.
 func (c *Config) IsConstantinople(num uint64) bool {
 	return isForked(c.ConstantinopleBlock, num)
-}
-
-// IsRamanujan returns whether num is either equal to the IsRamanujan fork block or greater.
-func (c *Config) IsRamanujan(num uint64) bool {
-	return isForked(c.RamanujanBlock, num)
-}
-
-// IsOnRamanujan returns whether num is equal to the Ramanujan fork block
-func (c *Config) IsOnRamanujan(num *big.Int) bool {
-	return numEqual(c.RamanujanBlock, num)
-}
-
-// IsNiels returns whether num is either equal to the Niels fork block or greater.
-func (c *Config) IsNiels(num uint64) bool {
-	return isForked(c.NielsBlock, num)
-}
-
-// IsOnNiels returns whether num is equal to the IsNiels fork block
-func (c *Config) IsOnNiels(num *big.Int) bool {
-	return numEqual(c.NielsBlock, num)
-}
-
-// IsMirrorSync returns whether num is either equal to the MirrorSync fork block or greater.
-func (c *Config) IsMirrorSync(num uint64) bool {
-	return isForked(c.MirrorSyncBlock, num)
-}
-
-// IsOnMirrorSync returns whether num is equal to the MirrorSync fork block
-func (c *Config) IsOnMirrorSync(num *big.Int) bool {
-	return numEqual(c.MirrorSyncBlock, num)
-}
-
-// IsBruno returns whether num is either equal to the Burn fork block or greater.
-func (c *Config) IsBruno(num uint64) bool {
-	return isForked(c.BrunoBlock, num)
-}
-
-// IsOnBruno returns whether num is equal to the Burn fork block
-func (c *Config) IsOnBruno(num *big.Int) bool {
-	return numEqual(c.BrunoBlock, num)
-}
-
-// IsEuler returns whether num is either equal to the euler fork block or greater.
-func (c *Config) IsEuler(num *big.Int) bool {
-	return isForked(c.EulerBlock, num.Uint64())
-}
-
-func (c *Config) IsOnEuler(num *big.Int) bool {
-	return numEqual(c.EulerBlock, num)
-}
-
-// IsGibbs returns whether num is either equal to the euler fork block or greater.
-func (c *Config) IsGibbs(num *big.Int) bool {
-	return isForked(c.GibbsBlock, num.Uint64())
-}
-
-func (c *Config) IsOnGibbs(num *big.Int) bool {
-	return numEqual(c.GibbsBlock, num)
-}
-
-func (c *Config) IsMoran(num uint64) bool {
-	return isForked(c.MoranBlock, num)
-}
-
-func (c *Config) IsOnMoran(num *big.Int) bool {
-	return numEqual(c.MoranBlock, num)
-}
-
-// IsNano returns whether num is either equal to the euler fork block or greater.
-func (c *Config) IsNano(num uint64) bool {
-	return isForked(c.NanoBlock, num)
-}
-
-func (c *Config) IsOnNano(num *big.Int) bool {
-	return numEqual(c.NanoBlock, num)
 }
 
 // IsMuirGlacier returns whether num is either equal to the Muir Glacier (EIP-2384) fork block or greater.
@@ -376,8 +298,6 @@ func (c *Config) forkBlockNumbers() []forkBlockNumber {
 		{name: "petersburgBlock", blockNumber: c.PetersburgBlock},
 		{name: "istanbulBlock", blockNumber: c.IstanbulBlock},
 		{name: "muirGlacierBlock", blockNumber: c.MuirGlacierBlock, optional: true},
-		{name: "eulerBlock", blockNumber: c.EulerBlock, optional: true},
-		{name: "gibbsBlock", blockNumber: c.GibbsBlock, optional: true},
 		{name: "berlinBlock", blockNumber: c.BerlinBlock},
 		{name: "londonBlock", blockNumber: c.LondonBlock},
 		{name: "arrowGlacierBlock", blockNumber: c.ArrowGlacierBlock, optional: true},
@@ -582,18 +502,6 @@ func (c *AuRaConfig) String() string {
 	return "aura"
 }
 
-type ParliaConfig struct {
-	DBPath   string
-	InMemory bool
-	Period   uint64 `json:"period"` // Number of seconds between blocks to enforce
-	Epoch    uint64 `json:"epoch"`  // Epoch length to update validatorSet
-}
-
-// String implements the stringer interface, returning the consensus engine details.
-func (b *ParliaConfig) String() string {
-	return "parlia"
-}
-
 // BorConfig is the consensus engine configs for Matic bor based sealing.
 type BorConfig struct {
 	Period                map[string]uint64 `json:"period"`                // Number of seconds between blocks to enforce
@@ -727,7 +635,6 @@ func (c *Config) Rules(num uint64, time uint64) *Rules {
 		IsLuban:               c.IsLuban(num),
 		IsPlato:               c.IsPlato(num),
 		IsEip1559FeeCollector: c.IsEip1559FeeCollector(num),
-		IsParlia:              c.Parlia != nil,
 		IsAura:                c.Aura != nil,
 	}
 }
