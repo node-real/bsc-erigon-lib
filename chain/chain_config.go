@@ -77,6 +77,7 @@ type Config struct {
 	NanoBlock       *big.Int `json:"nanoBlock,omitempty" toml:",omitempty"`       // nanoBlock switch block (nil = no fork, 0 = already activated)
 	MoranBlock      *big.Int `json:"moranBlock,omitempty" toml:",omitempty"`      // moranBlock switch block (nil = no fork, 0 = already activated)
 	PlanckBlock     *big.Int `json:"planckBlock,omitempty" toml:",omitempty"`     // planckBlock switch block (nil = no fork, 0 = already activated)
+	BonehBlock      *big.Int `json:"bonehBlock,omitempty" toml:",omitempty"`      // bonehBlock switch block (nil = no fork, 0 = already activated)
 	// Gnosis Chain fork blocks
 	PosdaoBlock *big.Int `json:"posdaoBlock,omitempty"`
 
@@ -95,7 +96,7 @@ func (c *Config) String() string {
 	engine := c.getEngine()
 
 	if c.Consensus == ParliaConsensus {
-		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Gibbs: %v, Planck: %v, Engine: %v}",
+		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Gibbs: %v, Planck: %v, Boneh: %v,  Engine: %v}",
 			c.ChainID,
 			c.RamanujanBlock,
 			c.NielsBlock,
@@ -107,6 +108,7 @@ func (c *Config) String() string {
 			c.MoranBlock,
 			c.GibbsBlock,
 			c.PlanckBlock,
+			c.BonehBlock,
 			engine,
 		)
 	}
@@ -321,6 +323,14 @@ func (c *Config) IsOnPlanck(num *big.Int) bool {
 	return numEqual(c.PlanckBlock, num)
 }
 
+func (c *Config) IsBoneh(num uint64) bool {
+	return isForked(c.BonehBlock, num)
+}
+
+func (c *Config) IsOnBoneh(num *big.Int) bool {
+	return numEqual(c.BonehBlock, num)
+}
+
 // CheckCompatible checks whether scheduled fork transitions have been imported
 // with a mismatching chain configuration.
 func (c *Config) CheckCompatible(newcfg *Config, height uint64) *ConfigCompatError {
@@ -480,6 +490,9 @@ func (c *Config) checkCompatible(newcfg *Config, head uint64) *ConfigCompatError
 	}
 	if incompatible(c.PlanckBlock, newcfg.PlanckBlock, head) {
 		return newCompatError("planck fork block", c.PlanckBlock, newcfg.PlanckBlock)
+	}
+	if incompatible(c.BonehBlock, newcfg.BonehBlock, head) {
+		return newCompatError("boneh fork block", c.BonehBlock, newcfg.BonehBlock)
 	}
 	return nil
 }
@@ -669,7 +682,7 @@ type Rules struct {
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
 	IsBerlin, IsLondon, IsShanghai, IsCancun                bool
 	IsSharding, IsPrague                                    bool
-	IsNano, IsMoran, IsGibbs, IsPlanck                      bool
+	IsNano, IsMoran, IsGibbs, IsPlanck, IsBoneh             bool
 	IsEip1559FeeCollector                                   bool
 	IsParlia, IsAura                                        bool
 }
@@ -698,6 +711,7 @@ func (c *Config) Rules(num uint64, time uint64) *Rules {
 		IsNano:                c.IsNano(num),
 		IsMoran:               c.IsMoran(num),
 		IsPlanck:              c.IsPlanck(num),
+		IsBoneh:               c.IsBoneh(num),
 		IsEip1559FeeCollector: c.IsEip1559FeeCollector(num),
 		IsParlia:              c.Parlia != nil,
 		IsAura:                c.Aura != nil,
