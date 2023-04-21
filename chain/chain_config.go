@@ -78,8 +78,8 @@ type Config struct {
 	NanoBlock       *big.Int `json:"nanoBlock,omitempty" toml:",omitempty"`       // nanoBlock switch block (nil = no fork, 0 = already activated)
 	MoranBlock      *big.Int `json:"moranBlock,omitempty" toml:",omitempty"`      // moranBlock switch block (nil = no fork, 0 = already activated)
 	PlanckBlock     *big.Int `json:"planckBlock,omitempty" toml:",omitempty"`     // planckBlock switch block (nil = no fork, 0 = already activated)
-	BonehBlock      *big.Int `json:"bonehBlock,omitempty" toml:",omitempty"`      // bonehBlock switch block (nil = no fork, 0 = already activated)
-	LynnBlock       *big.Int `json:"lynnBlock,omitempty" toml:",omitempty"`       // lynnBlock switch block (nil = no fork, 0 = already activated)
+	LubanBlock      *big.Int `json:"lubanBlock,omitempty" toml:",omitempty"`      // lubanBlock switch block (nil = no fork, 0 = already activated)
+	PlatoBlock      *big.Int `json:"platoBlock,omitempty" toml:",omitempty"`      // platoBlock switch block (nil = no fork, 0 = already activated)
 	// Gnosis Chain fork blocks
 	PosdaoBlock *big.Int `json:"posdaoBlock,omitempty"`
 
@@ -341,20 +341,20 @@ func (c *Config) IsOnPlanck(num *big.Int) bool {
 	return numEqual(c.PlanckBlock, num)
 }
 
-func (c *Config) IsBoneh(num uint64) bool {
-	return isForked(c.BonehBlock, num)
+func (c *Config) IsLuban(num uint64) bool {
+	return isForked(c.LubanBlock, num)
 }
 
-func (c *Config) IsOnBoneh(num *big.Int) bool {
-	return numEqual(c.BonehBlock, num)
+func (c *Config) IsOnLuban(num *big.Int) bool {
+	return numEqual(c.LubanBlock, num)
 }
 
-func (c *Config) IsLynn(num uint64) bool {
-	return isForked(c.LynnBlock, num)
+func (c *Config) IsPlato(num uint64) bool {
+	return isForked(c.PlatoBlock, num)
 }
 
-func (c *Config) IsOnLynn(num *big.Int) bool {
-	return numEqual(c.LynnBlock, num)
+func (c *Config) IsOnPlato(num *big.Int) bool {
+	return numEqual(c.PlatoBlock, num)
 }
 
 // CheckCompatible checks whether scheduled fork transitions have been imported
