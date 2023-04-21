@@ -78,8 +78,8 @@ type Config struct {
 	NanoBlock       *big.Int `json:"nanoBlock,omitempty" toml:",omitempty"`       // nanoBlock switch block (nil = no fork, 0 = already activated)
 	MoranBlock      *big.Int `json:"moranBlock,omitempty" toml:",omitempty"`      // moranBlock switch block (nil = no fork, 0 = already activated)
 	PlanckBlock     *big.Int `json:"planckBlock,omitempty" toml:",omitempty"`     // planckBlock switch block (nil = no fork, 0 = already activated)
-	BonehBlock      *big.Int `json:"bonehBlock,omitempty" toml:",omitempty"`      // bonehBlock switch block (nil = no fork, 0 = already activated)
-	LynnBlock       *big.Int `json:"lynnBlock,omitempty" toml:",omitempty"`       // lynnBlock switch block (nil = no fork, 0 = already activated)
+	LubanBlock      *big.Int `json:"lubanBlock,omitempty" toml:",omitempty"`      // lubanBlock switch block (nil = no fork, 0 = already activated)
+	PlatoBlock      *big.Int `json:"platoBlock,omitempty" toml:",omitempty"`      // platoBlock switch block (nil = no fork, 0 = already activated)
 	// Gnosis Chain fork blocks
 	PosdaoBlock *big.Int `json:"posdaoBlock,omitempty"`
 
@@ -98,7 +98,7 @@ func (c *Config) String() string {
 	engine := c.getEngine()
 
 	if c.Consensus == ParliaConsensus {
-		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Gibbs: %v, Planck: %v, Boneh: %v,  Lynn: %v, Engine: %v}",
+		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Gibbs: %v, Planck: %v, Luban: %v, Plato: %v, Engine: %v}",
 			c.ChainID,
 			c.RamanujanBlock,
 			c.NielsBlock,
@@ -110,8 +110,8 @@ func (c *Config) String() string {
 			c.MoranBlock,
 			c.GibbsBlock,
 			c.PlanckBlock,
-			c.BonehBlock,
-			c.LynnBlock,
+			c.LubanBlock,
+			c.PlatoBlock,
 			engine,
 		)
 	}
@@ -332,20 +332,20 @@ func (c *Config) IsOnPlanck(num *big.Int) bool {
 	return numEqual(c.PlanckBlock, num)
 }
 
-func (c *Config) IsBoneh(num uint64) bool {
-	return isForked(c.BonehBlock, num)
+func (c *Config) IsLuban(num uint64) bool {
+	return isForked(c.LubanBlock, num)
 }
 
-func (c *Config) IsOnBoneh(num *big.Int) bool {
-	return numEqual(c.BonehBlock, num)
+func (c *Config) IsOnLuban(num *big.Int) bool {
+	return numEqual(c.LubanBlock, num)
 }
 
-func (c *Config) IsLynn(num uint64) bool {
-	return isForked(c.LynnBlock, num)
+func (c *Config) IsPlato(num uint64) bool {
+	return isForked(c.PlatoBlock, num)
 }
 
-func (c *Config) IsOnLynn(num *big.Int) bool {
-	return numEqual(c.LynnBlock, num)
+func (c *Config) IsOnPlato(num *big.Int) bool {
+	return numEqual(c.PlatoBlock, num)
 }
 
 // CheckCompatible checks whether scheduled fork transitions have been imported
@@ -510,11 +510,11 @@ func (c *Config) checkCompatible(newcfg *Config, head uint64) *ConfigCompatError
 	if incompatible(c.PlanckBlock, newcfg.PlanckBlock, head) {
 		return newCompatError("planck fork block", c.PlanckBlock, newcfg.PlanckBlock)
 	}
-	if incompatible(c.BonehBlock, newcfg.BonehBlock, head) {
-		return newCompatError("boneh fork block", c.BonehBlock, newcfg.BonehBlock)
+	if incompatible(c.LubanBlock, newcfg.LubanBlock, head) {
+		return newCompatError("luban fork block", c.LubanBlock, newcfg.LubanBlock)
 	}
-	if incompatible(c.LynnBlock, newcfg.LynnBlock, head) {
-		return newCompatError("lynn fork block", c.LynnBlock, newcfg.LynnBlock)
+	if incompatible(c.PlatoBlock, newcfg.PlatoBlock, head) {
+		return newCompatError("plato fork block", c.PlatoBlock, newcfg.PlatoBlock)
 	}
 	return nil
 }
@@ -704,7 +704,7 @@ type Rules struct {
 	IsByzantium, IsConstantinople, IsPetersburg, IsIstanbul bool
 	IsBerlin, IsLondon, IsShanghai, IsCancun                bool
 	IsSharding, IsPrague                                    bool
-	IsNano, IsMoran, IsGibbs, IsPlanck, IsBoneh, IsLynn     bool
+	IsNano, IsMoran, IsGibbs, IsPlanck, IsLuban, IsPlato    bool
 	IsEip1559FeeCollector                                   bool
 	IsParlia, IsAura                                        bool
 }
@@ -734,8 +734,8 @@ func (c *Config) Rules(num uint64, time uint64) *Rules {
 		IsNano:                c.IsNano(num),
 		IsMoran:               c.IsMoran(num),
 		IsPlanck:              c.IsPlanck(num),
-		IsBoneh:               c.IsBoneh(num),
-		IsLynn:                c.IsLynn(num),
+		IsLuban:               c.IsLuban(num),
+		IsPlato:               c.IsPlato(num),
 		IsEip1559FeeCollector: c.IsEip1559FeeCollector(num),
 		IsParlia:              c.Parlia != nil,
 		IsAura:                c.Aura != nil,
