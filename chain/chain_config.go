@@ -395,6 +395,8 @@ func (c *Config) forkBlockNumbers() []forkBlockNumber {
 		{name: "eulerBlock", blockNumber: c.EulerBlock, optional: true},
 		{name: "gibbsBlock", blockNumber: c.GibbsBlock},
 		{name: "planckBlock", blockNumber: c.PlanckBlock},
+		{name: "lubanBlock", blockNumber: c.LubanBlock},
+		{name: "platoBlock", blockNumber: c.PlatoBlock},
 		{name: "berlinBlock", blockNumber: c.BerlinBlock},
 		{name: "londonBlock", blockNumber: c.LondonBlock},
 		{name: "arrowGlacierBlock", blockNumber: c.ArrowGlacierBlock, optional: true},
