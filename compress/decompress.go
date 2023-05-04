@@ -416,7 +416,7 @@ func (g *Getter) nextPos(clean bool) uint64 {
 		}
 	}
 	table := g.posDict
-	if table.bitLen == 0 {
+	if table != nil && table.bitLen == 0 {
 		return table.pos[0]
 	}
 	var l byte
