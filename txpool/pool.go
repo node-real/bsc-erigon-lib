@@ -1785,7 +1785,7 @@ func (p *TxPool) logStats() {
 		ctx = append(ctx, "cache_keys", cacheKeys)
 	}
 	ctx = append(ctx, "alloc", common.ByteCount(m.Alloc), "sys", common.ByteCount(m.Sys))
-	log.Info("[txpool] stat", ctx...)
+	log.Debug("[txpool] stat", ctx...)
 	pendingSubCounter.Set(uint64(p.pending.Len()))
 	basefeeSubCounter.Set(uint64(p.baseFee.Len()))
 	queuedSubCounter.Set(uint64(p.queued.Len()))
