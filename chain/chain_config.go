@@ -98,7 +98,7 @@ func (c *Config) String() string {
 	engine := c.getEngine()
 
 	if c.Consensus == ParliaConsensus {
-		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Gibbs: %v, Planck: %v, Luban: %v, Plato: %v, Engine: %v}",
+		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Gibbs: %v, Planck: %v, Luban: %v, Plato: %v, London: %v, Engine: %v}",
 			c.ChainID,
 			c.RamanujanBlock,
 			c.NielsBlock,
@@ -112,6 +112,7 @@ func (c *Config) String() string {
 			c.PlanckBlock,
 			c.LubanBlock,
 			c.PlatoBlock,
+			c.LondonBlock,
 			engine,
 		)
 	}
