@@ -355,12 +355,16 @@ func (c *Config) IsOnHertz(num *big.Int) bool {
 }
 
 // IsKepler returns whether time is either equal to the IsKepler fork time or greater.
-func (c *Config) IsKepler(time uint64) bool {
-	return isForked(c.KeplerTime, time)
+func (c *Config) IsKepler(num uint64, time uint64) bool {
+	return c.IsLondon(num) && isForked(c.KeplerTime, time)
 }
 
-func (c *Config) IsOnKepler(lastBlockTime uint64, currentBlockTime uint64) bool {
-	return !c.IsKepler(lastBlockTime) && c.IsKepler(currentBlockTime)
+func (c *Config) IsOnKepler(currentBlockNumber *big.Int, lastBlockTime uint64, currentBlockTime uint64) bool {
+	lastBlockNumber := new(big.Int)
+	if currentBlockNumber.Cmp(big.NewInt(1)) >= 0 {
+		lastBlockNumber.Sub(currentBlockNumber, big.NewInt(1))
+	}
+	return !c.IsKepler(lastBlockNumber.Uint64(), lastBlockTime) && c.IsKepler(currentBlockNumber.Uint64(), currentBlockTime)
 }
 
 // CheckCompatible checks whether scheduled fork transitions have been imported
@@ -744,7 +748,7 @@ func (c *Config) Rules(num uint64, time uint64) *Rules {
 		IsLuban:               c.IsLuban(num),
 		IsPlato:               c.IsPlato(num),
 		IsHertz:               c.IsHertz(num),
-		IsKepler:              c.IsKepler(time),
+		IsKepler:              c.IsKepler(num, time),
 		IsEip1559FeeCollector: c.IsEip1559FeeCollector(num),
 		IsAura:                c.Aura != nil,
 		IsParlia:              true,
