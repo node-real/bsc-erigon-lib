@@ -229,8 +229,8 @@ func (c *Config) IsGrayGlacier(num uint64) bool {
 }
 
 // IsShanghai returns whether time is either equal to the Shanghai fork time or greater.
-func (c *Config) IsShanghai(time uint64) bool {
-	return isForked(c.ShanghaiTime, time)
+func (c *Config) IsShanghai(num uint64, time uint64) bool {
+	return c.IsLondon(num) && isForked(c.ShanghaiTime, time)
 }
 
 // IsCancun returns whether time is either equal to the Cancun fork time or greater.
@@ -739,7 +739,7 @@ func (c *Config) Rules(num uint64, time uint64) *Rules {
 		IsIstanbul:            c.IsIstanbul(num),
 		IsBerlin:              c.IsBerlin(num),
 		IsLondon:              c.IsLondon(num),
-		IsShanghai:            c.IsShanghai(time),
+		IsShanghai:            c.IsShanghai(num, time),
 		IsCancun:              c.IsCancun(time),
 		IsPrague:              c.IsPrague(time),
 		IsNano:                c.IsNano(num),
