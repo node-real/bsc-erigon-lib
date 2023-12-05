@@ -82,6 +82,7 @@ type Config struct {
 	LubanBlock      *big.Int `json:"lubanBlock,omitempty" toml:",omitempty"`      // lubanBlock switch block (nil = no fork, 0 = already activated)
 	PlatoBlock      *big.Int `json:"platoBlock,omitempty" toml:",omitempty"`      // platoBlock switch block (nil = no fork, 0 = already activated)
 	HertzBlock      *big.Int `json:"hertzBlock,omitempty" toml:",omitempty"`      // hertzBlock switch block (nil = no fork, 0 = already activated)
+	HertzfixBlock   *big.Int `json:"hertzfixBlock,omitempty" toml:",omitempty"`   // hertzfixBlock switch block (nil = no fork, 0 = already activated)
 	// Gnosis Chain fork blocks
 	PosdaoBlock *big.Int `json:"posdaoBlock,omitempty"`
 
@@ -100,7 +101,7 @@ func (c *Config) String() string {
 	engine := c.getEngine()
 
 	if c.Consensus == ParliaConsensus {
-		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Planck: %v, Luban: %v, Plato: %v, Hertz: %v, ShanghaiTime: %v, KeplerTime %v, Engine: %v}",
+		return fmt.Sprintf("{ChainID: %v Ramanujan: %v, Niels: %v, MirrorSync: %v, Bruno: %v, Euler: %v, Gibbs: %v, Nano: %v, Moran: %v, Planck: %v, Luban: %v, Plato: %v, Hertz: %v, Hertzfix: %v, ShanghaiTime: %v, KeplerTime %v, Engine: %v}",
 			c.ChainID,
 			c.RamanujanBlock,
 			c.NielsBlock,
@@ -114,6 +115,7 @@ func (c *Config) String() string {
 			c.LubanBlock,
 			c.PlatoBlock,
 			c.HertzBlock,
+			c.HertzfixBlock,
 			c.ShanghaiTime,
 			c.KeplerTime,
 			engine,
@@ -408,6 +410,7 @@ func (c *Config) forkBlockNumbers() []forkBlockNumber {
 		{name: "lubanBlock", blockNumber: c.LubanBlock},
 		{name: "platoBlock", blockNumber: c.PlatoBlock},
 		{name: "hertzBlock", blockNumber: c.HertzBlock},
+		{name: "hertzfixBlock", blockNumber: c.HertzfixBlock},
 		{name: "berlinBlock", blockNumber: c.BerlinBlock, optional: true},
 		{name: "londonBlock", blockNumber: c.LondonBlock, optional: true},
 		{name: "arrowGlacierBlock", blockNumber: c.ArrowGlacierBlock, optional: true},
@@ -536,6 +539,9 @@ func (c *Config) checkCompatible(newcfg *Config, head uint64) *ConfigCompatError
 	}
 	if incompatible(c.PlatoBlock, newcfg.PlatoBlock, head) {
 		return newCompatError("plato fork block", c.PlatoBlock, newcfg.PlatoBlock)
+	}
+	if incompatible(c.HertzBlock, newcfg.HertzBlock, head) {
+		return newCompatError("hertz fork block", c.HertzBlock, newcfg.HertzBlock)
 	}
 	if incompatible(c.HertzBlock, newcfg.HertzBlock, head) {
 		return newCompatError("hertz fork block", c.HertzBlock, newcfg.HertzBlock)
