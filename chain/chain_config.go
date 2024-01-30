@@ -543,9 +543,10 @@ func (c *Config) checkCompatible(newcfg *Config, head uint64) *ConfigCompatError
 	if incompatible(c.HertzBlock, newcfg.HertzBlock, head) {
 		return newCompatError("hertz fork block", c.HertzBlock, newcfg.HertzBlock)
 	}
-	if incompatible(c.HertzfixBlock, newcfg.HertzfixBlock, head) {
-		return newCompatError("hertz fork block", c.HertzfixBlock, newcfg.HertzfixBlock)
-	}
+	// TODO @Blxdyx It's temporary fix for rpc issues, will add in next commit
+	//if incompatible(c.HertzfixBlock, newcfg.HertzfixBlock, head) {
+	//	return newCompatError("hertz fork block", c.HertzfixBlock, newcfg.HertzfixBlock)
+	//}
 	return nil
 }
 
